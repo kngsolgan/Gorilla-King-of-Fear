@@ -1170,25 +1170,11 @@ footer {
         <span><strong>FREE</strong>pour l'instant</span>
       </div>
 
-      <!-- ZONE DE DÉPÔT APK -->
-      <div class="upload-zone" id="dropZone">
-        <div class="upload-zone-content">
-          <span class="upload-icon">📦</span>
-          <span class="upload-label">Dépose ton fichier .apk ici</span>
-          <span class="upload-sublabel">ou clique pour sélectionner le fichier</span>
-        </div>
-        <input type="file" id="apk-input" accept=".apk">
-      </div>
-
-      <div class="apk-ready" id="apkReady">
-        <span>✅</span>
-        <span class="apk-filename" id="apkFilename">gorilla_king.apk</span>
-        <span style="color:var(--green-corrupt); font-size:0.6rem; letter-spacing:2px;">PRÊT</span>
-      </div>
-
-      <button class="btn-download" id="downloadBtn" disabled>
-        <span>⬇</span> Télécharger GORILLA_KING_OF_FEAR.apk
-      </button>
+      <a class="btn-download" id="downloadBtn"
+        href="https://github.com/kngsolgan/Gorilla-King-of-Fear/releases/tag/alpha1"
+        target="_blank" rel="noopener">
+        <span>⬇</span> Télécharger — Alpha 1.0
+      </a>
 
       <!-- EASTER EGG FRAGMENT 5/5 -->
       <p class="download-warning">
@@ -1203,8 +1189,7 @@ footer {
     </div>
 
     <p style="font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:rgba(139,0,0,0.3); letter-spacing:2px; line-height:2;">
-      POUR AJOUTER TON APK: Dépose simplement ton fichier dans la zone ci-dessus<br>
-      puis partage ta page GitHub Pages avec le fichier .apk dans le même repo.
+      GITHUB RELEASES — ALPHA 1.0 — kngsolgan/Gorilla-King-of-Fear
     </p>
   </div>
 </section>
@@ -1258,47 +1243,7 @@ function spawnGlitchLine() {
 }
 setInterval(() => { if (Math.random() < 0.3) spawnGlitchLine(); }, 800);
 
-/* ─── APK UPLOAD ─── */
-const dropZone = document.getElementById('dropZone');
-const apkInput = document.getElementById('apk-input');
-const apkReady = document.getElementById('apkReady');
-const apkFilename = document.getElementById('apkFilename');
-const downloadBtn = document.getElementById('downloadBtn');
-let apkFile = null;
 
-dropZone.addEventListener('click', () => apkInput.click());
-apkInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
-
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('drag-over');
-});
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const f = e.dataTransfer.files[0];
-  if (f && f.name.endsWith('.apk')) handleFile(f);
-});
-
-function handleFile(f) {
-  if (!f || !f.name.endsWith('.apk')) return;
-  apkFile = f;
-  apkFilename.textContent = f.name;
-  apkReady.classList.add('show');
-  downloadBtn.disabled = false;
-  downloadBtn.textContent = `⬇  Télécharger ${f.name}`;
-}
-
-downloadBtn.addEventListener('click', () => {
-  if (!apkFile) return;
-  const url = URL.createObjectURL(apkFile);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = apkFile.name;
-  a.click();
-  URL.revokeObjectURL(url);
-});
 
 /* ─── EASTER EGG SYSTEM ─── */
 const eeFragments = document.querySelectorAll('.ee-fragment');
