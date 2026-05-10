@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GORILLA KING OF FEAR</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Oswald:wght@300;400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blood: #8B0000;
+  --blood-light: #CC0000;
+  --glitch-cyan: #00FFFF;
+  --glitch-magenta: #FF00FF;
+  --dark: #050505;
+  --dark2: #0a0a0a;
+  --dark3: #0f0f0f;
+  --gray-muted: #1a1a1a;
+  --text-dim: #666;
+  --text-mid: #999;
+  --text-light: #ccc;
+  --green-corrupt: #00FF41;
+  --amber-warn: #FF8C00;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  color: var(--text-light);
+  font-family: 'Oswald', sans-serif;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── SCANLINES ─── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ─── NAVBAR ─── */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 0.8rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(139,0,0,0.3);
+}
+
+.nav-logo {
+  font-family: 'Creepster', cursive;
+  font-size: 1.4rem;
+  color: var(--blood-light);
+  text-shadow: 0 0 10px var(--blood);
+  letter-spacing: 2px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--blood-light); }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 2rem 4rem;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(100,0,0,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(139,0,0,0.08) 0%, transparent 60%),
+    var(--dark);
+  z-index: 0;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139,0,0,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,0,0,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridShift 8s linear infinite;
+  z-index: 0;
+}
+
+@keyframes gridShift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(60px); }
+}
+
+.hero-content { position: relative; z-index: 2; text-align: center; }
+
+.skull-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+  animation: floatSkulls 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px var(--blood));
+}
+
+@keyframes floatSkulls {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+}
+
+.hero-subtitle-top {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--blood-light);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.hero-title {
+  font-family: 'Creepster', cursive;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.9;
+  color: #fff;
+  text-shadow:
+    0 0 30px rgba(139,0,0,0.8),
+    0 0 80px rgba(139,0,0,0.4);
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title .line2 {
+  color: var(--blood-light);
+  display: block;
+  font-size: clamp(2rem, 7vw, 5.5rem);
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.glitch-text::before {
+  color: var(--glitch-cyan);
+  clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+  animation: glitch1 3.5s infinite;
+  opacity: 0.8;
+}
+
+.glitch-text::after {
+  color: var(--glitch-magenta);
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  animation: glitch2 3.5s infinite;
+  opacity: 0.8;
+}
+
+@keyframes glitch1 {
+  0%, 90%, 100% { transform: translate(0); opacity: 0; }
+  92% { transform: translate(-4px, 2px); opacity: 0.8; }
+  94% { transform: translate(4px, -2px); opacity: 0.8; }
+  96% { transform: translate(-2px, 1px); opacity: 0.8; }
+  98% { transform: translate(0); opacity: 0; }
+}
+
+@keyframes glitch2 {
+  0%, 88%, 100% { transform: translate(0); opacity: 0; }
+  90% { transform: translate(4px, -1px); opacity: 0.8; }
+  92% { transform: translate(-3px, 2px); opacity: 0.8; }
+  95% { transform: translate(2px, -1px); opacity: 0.8; }
+  97% { transform: translate(0); opacity: 0; }
+}
+
+.hero-desc {
+  font-size: 1rem;
+  color: var(--text-mid);
+  max-width: 500px;
+  margin: 1.5rem auto 2.5rem;
+  line-height: 1.7;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.badge {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(139,0,0,0.4);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blood-light);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2.5rem;
+  background: var(--blood);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.hero-cta:hover::before { transform: translateX(100%); }
+.hero-cta:hover { background: var(--blood-light); box-shadow: 0 0 30px rgba(204,0,0,0.5); }
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dim);
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.scroll-indicator::after {
+  content: '';
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(var(--blood), transparent);
+  animation: lineGrow 2s ease-in-out infinite;
+}
+
+@keyframes lineGrow {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ─── SECTION TITLES ─── */
+.section-title {
+  font-family: 'Creepster', cursive;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(139,0,0,0.6);
+}
+
+.section-line {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blood), transparent);
+  margin: 0 auto 1rem;
+}
+
+.section-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--blood-light);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-align: center;
+  display: block;
+  margin-bottom: 3rem;
+  opacity: 0.7;
+}
+
+/* ─── FEATURES ─── */
+#features {
+  padding: 6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.feature-card {
+  background: var(--dark2);
+  border: 1px solid rgba(139,0,0,0.2);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--blood);
+}
+
+.feature-card:hover {
+  border-color: rgba(139,0,0,0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px rgba(139,0,0,0.15);
+}
+
+.feature-card:hover::before {
+  background: var(--blood-light);
+  box-shadow: 0 0 10px var(--blood-light);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+  filter: drop-shadow(0 0 8px var(--blood));
+}
+
+.feature-title {
+  font-family: 'Creepster', cursive;
+  font-size: 1.4rem;
+  color: var(--blood-light);
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.feature-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ─── CORRUPT DIVIDER ─── */
+.corrupt-divider {
+  width: 100%;
+  padding: 1.5rem 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.corrupt-divider-inner {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(139,0,0,0.3);
+  letter-spacing: 3px;
+  white-space: nowrap;
+  animation: marquee 20s linear infinite;
+  display: inline-block;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─── SCREENSHOTS ─── */
+#screenshots {
+  padding: 6rem 2rem;
+  background: var(--dark2);
+  position: relative;
+}
+
+.screenshots-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+@media (max-width: 700px) {
+  .screenshots-grid { grid-template-columns: 1fr; }
+}
+
+.screenshot-card {
+  aspect-ratio: 16/9;
+  background: var(--dark3);
+  border: 1px solid rgba(139,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.screenshot-card:hover { border-color: var(--blood-light); }
+
+.screenshot-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: rgba(139,0,0,0.4);
+  font-size: 2rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.screenshot-placeholder small {
+  font-size: 0.55rem;
+  letter-spacing: 4px;
+  color: rgba(139,0,0,0.3);
+}
+
+.screenshot-glitch-overlay {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(139,0,0,0.04) 3px,
+    rgba(139,0,0,0.04) 4px
+  );
+  pointer-events: none;
+}
+
+/* ─── DOWNLOAD SECTION ─── */
+#download {
+  padding: 8rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(139,0,0,0.12) 0%, transparent 70%),
+    var(--dark);
+}
+
+.download-container {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.download-box {
+  background: var(--dark2);
+  border: 1px solid rgba(139,0,0,0.4);
+  padding: 3rem 2.5rem;
+  position: relative;
+  margin: 3rem auto;
+}
+
+.download-box::before,
+.download-box::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--blood-light);
+  border-style: solid;
+}
+
+.download-box::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+
+.download-box::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+.version-badge {
+  display: inline-block;
+  background: rgba(139,0,0,0.2);
+  border: 1px solid rgba(139,0,0,0.4);
+  color: var(--blood-light);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  padding: 0.3rem 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.download-title {
+  font-family: 'Creepster', cursive;
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(139,0,0,0.5);
+}
+
+.download-desc {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.download-meta {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.download-meta span { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+.download-meta strong { color: var(--text-light); font-size: 0.9rem; font-family: 'Oswald', sans-serif; }
+
+/* ─── APK UPLOAD ZONE ─── */
+.upload-zone {
+  border: 2px dashed rgba(139,0,0,0.4);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--blood-light);
+  background: rgba(139,0,0,0.05);
+}
+
+.upload-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.upload-icon { font-size: 2.5rem; filter: drop-shadow(0 0 8px var(--blood)); }
+
+.upload-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--text-mid);
+  text-transform: uppercase;
+}
+
+.upload-sublabel {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+#apk-input { display: none; }
+
+.apk-ready {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0,255,65,0.05);
+  border: 1px solid rgba(0,255,65,0.2);
+  margin-bottom: 1.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--green-corrupt);
+}
+
+.apk-ready.show { display: flex; }
+.apk-filename { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 3rem;
+  background: var(--blood);
+  color: #fff;
+  border: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-download::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.btn-download:hover::before { transform: translateX(100%); }
+
+.btn-download:hover {
+  background: var(--blood-light);
+  box-shadow: 0 0 40px rgba(204,0,0,0.4);
+}
+
+.btn-download:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-download:disabled:hover { background: var(--blood); box-shadow: none; }
+.btn-download:disabled::before { display: none; }
+
+.download-warning {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  margin-top: 1rem;
+  letter-spacing: 2px;
+  line-height: 1.8;
+}
+
+/* ─── LORE SECTION ─── */
+#lore {
+  padding: 6rem 2rem;
+  background: var(--dark2);
+}
+
+.lore-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.lore-text {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--text-mid);
+  font-weight: 300;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.lore-text em {
+  color: var(--blood-light);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 3rem 2rem;
+  border-top: 1px solid rgba(139,0,0,0.2);
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Creepster', cursive;
+  font-size: 1.5rem;
+  color: var(--blood-light);
+  text-shadow: 0 0 10px var(--blood);
+  margin-bottom: 1rem;
+}
+
+.footer-copy {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* ─── GLITCH LINES ─── */
+.glitch-line {
+  position: absolute;
+  height: 2px;
+  background: var(--glitch-cyan);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* ─── EASTER EGG SYSTEM ─── */
+.ee-fragment {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(139,0,0,0.15);
+  letter-spacing: 2px;
+  cursor: default;
+  user-select: none;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.ee-fragment[data-found="true"] {
+  color: var(--green-corrupt);
+  text-shadow: 0 0 8px var(--green-corrupt);
+  animation: eePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes eePulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.ee-tooltip {
+  display: none;
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(0,0,0,0.95);
+  border: 1px solid var(--green-corrupt);
+  padding: 0.8rem 1.2rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--green-corrupt);
+  z-index: 10000;
+  letter-spacing: 2px;
+  max-width: 280px;
+  line-height: 1.8;
+}
+
+.ee-tooltip.show { display: block; }
+
+.ee-counter {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  background: rgba(0,0,0,0.9);
+  border: 1px solid rgba(139,0,0,0.3);
+  padding: 0.5rem 0.8rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  z-index: 999;
+  letter-spacing: 2px;
+  display: none;
+}
+
+.ee-counter.visible { display: block; }
+.ee-counter span { color: var(--blood-light); }
+
+/* ─── FINAL CODE MODAL ─── */
+.code-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(0,0,0,0.97);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.code-modal.show { display: flex; }
+
+.code-modal-inner {
+  text-align: center;
+  animation: revealCode 1s ease-out;
+}
+
+@keyframes revealCode {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.code-modal-glitch {
+  font-family: 'Creepster', cursive;
+  font-size: clamp(2rem, 8vw, 5rem);
+  color: var(--blood-light);
+  text-shadow: 0 0 40px var(--blood), 0 0 80px rgba(139,0,0,0.4);
+  margin-bottom: 1rem;
+  animation: modalGlitch 0.5s steps(1) 3;
+}
+
+@keyframes modalGlitch {
+  0%, 100% { clip-path: none; transform: none; }
+  25% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translate(5px, 0); color: var(--glitch-cyan); }
+  50% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translate(-5px, 0); color: var(--glitch-magenta); }
+  75% { clip-path: none; transform: translate(0, 3px); }
+}
+
+.code-modal-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--green-corrupt);
+  letter-spacing: 4px;
+  margin-bottom: 2rem;
+}
+
+.code-modal-close {
+  background: transparent;
+  border: 1px solid rgba(139,0,0,0.4);
+  color: var(--text-dim);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+.code-modal-close:hover {
+  border-color: var(--blood-light);
+  color: var(--blood-light);
+}
+
+.code-modal-fragments {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.code-modal-fragments .frag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(0,255,65,0.3);
+  color: var(--green-corrupt);
+  animation: fragBlink 0.5s steps(1) infinite alternate;
+}
+
+@keyframes fragBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── CORRUPT TERMINAL ─── */
+.corrupt-terminal {
+  background: #000;
+  border: 1px solid rgba(0,255,65,0.2);
+  padding: 1.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--green-corrupt);
+  line-height: 1.9;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  position: relative;
+}
+
+.corrupt-terminal::before {
+  content: '> GORILLA_SYSTEM_LOG.exe';
+  display: block;
+  color: var(--blood-light);
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0,255,65,0.1);
+}
+
+.terminal-line { color: rgba(0,255,65,0.6); }
+.terminal-line.err { color: var(--blood-light); }
+.terminal-line.warn { color: var(--amber-warn); }
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 13px;
+  background: var(--green-corrupt);
+  vertical-align: middle;
+  animation: blink 0.8s steps(1) infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<!-- GLITCH LINES (JS generated) -->
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🦍 GKF</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#screenshots">Screenshots</a></li>
+    <li><a href="#download">Download</a></li>
+    <li><a href="#lore">Lore</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <span class="skull-icon">🦍</span>
+    <p class="hero-subtitle-top">// Initialisation du cauchemar...</p>
+
+    <h1 class="hero-title">
+      <span class="glitch-text" data-text="GORILLA">GORILLA</span>
+      <span class="line2">
+        <span class="glitch-text" data-text="KING OF FEAR">KING OF FEAR</span>
+      </span>
+    </h1>
+
+    <!-- EASTER EGG FRAGMENT 1/5 -->
+    <p class="ee-fragment" data-index="0" data-code="The" title="Quelque chose se cache ici...">
+      [ 54 68 65 20 ] // sys_corrupt_echo
+    </p>
+
+    <p class="hero-desc">
+      Ose entrer dans la jungle corrompue. Chaque ombre cache une horreur,
+      chaque bruit est peut-être ton dernier. Le Roi règne sur tes cauchemars.
+    </p>
+
+    <div class="hero-badges">
+      <span class="badge">🔞 Horror</span>
+      <span class="badge">📱 Android APK</span>
+      <span class="badge">🌐 Multiplayer</span>
+      <span class="badge">👻 Gorilla Tag Clone</span>
+    </div>
+
+    <a href="#download" class="hero-cta">
+      <span>⬇</span> Télécharger le Jeu
+    </a>
+  </div>
+
+  <div class="scroll-indicator">Défiler</div>
+</section>
+
+<!-- CORRUPT DIVIDER -->
+<div class="corrupt-divider">
+  <div class="corrupt-divider-inner">
+    ◆ FEAR IS CONTAGIOUS ◆ YOU CANNOT RUN ◆ THE KING AWAITS ◆ SYSTEM CORRUPTED ◆ NO ESCAPE ◆ GORILLA KING OF FEAR ◆ FEAR IS CONTAGIOUS ◆ YOU CANNOT RUN ◆ THE KING AWAITS ◆ SYSTEM CORRUPTED ◆ NO ESCAPE ◆ GORILLA KING OF FEAR ◆ FEAR IS CONTAGIOUS ◆ YOU CANNOT RUN ◆ THE KING AWAITS ◆ SYSTEM CORRUPTED ◆ NO ESCAPE ◆ GORILLA KING OF FEAR ◆
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <h2 class="section-title">Mécaniques du Chaos</h2>
+  <div class="section-line"></div>
+  <span class="section-tag">// Ce que le jeu te réserve</span>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🦍</span>
+      <h3 class="feature-title">Locomotion Gorille</h3>
+      <p class="feature-desc">Déplace-toi avec tes bras comme dans Gorilla Tag, mais chaque mouvement attire l'attention du Roi. La panique est ton moteur.</p>
+    </div>
+
+    <div class="feature-card">
+      <!-- EASTER EGG FRAGMENT 2/5 -->
+      <span class="feature-icon">👁</span>
+      <h3 class="feature-title">Le Roi Corrompu</h3>
+      <p class="feature-desc">Une IA implacable qui apprend de tes erreurs. Il connaît tes habitudes. Il sait où tu vas aller. <span class="ee-fragment" data-index="1" data-code="End" title="Un fragment de vérité...">[ 45 6E 64 ]</span></p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🌑</span>
+      <h3 class="feature-title">Arènes Maudites</h3>
+      <p class="feature-desc">Des maps générées avec des glitchs intentionnels. Les textures se corrompent, les murs disparaissent. Rien n'est stable.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🔊</span>
+      <h3 class="feature-title">Audio Binaural</h3>
+      <p class="feature-desc">Le Roi rugit dans tes écouteurs. Les sons 3D spatials te font croire qu'il est derrière toi. Joue avec le son. Si tu oses.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">💀</span>
+      <h3 class="feature-title">Mode Survival</h3>
+      <p class="feature-desc">Survie jusqu'à l'aube. Chaque nuit devient plus longue. Le Roi devient plus rapide. Il n'y a pas de victoire, seulement du sursis.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🕸</span>
+      <h3 class="feature-title">Multijoueur Corrompu</h3>
+      <p class="feature-desc">Joue avec des amis — ou contre eux. Le Roi peut posséder n'importe qui dans ta partie. Fais confiance à personne.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section id="screenshots">
+  <div class="screenshots-wrap">
+    <h2 class="section-title">Aperçus du Cauchemar</h2>
+    <div class="section-line"></div>
+    <span class="section-tag">// captures d'écran — qualité corrompue garantie</span>
+
+    <!-- EASTER EGG FRAGMENT 3/5 -->
+    <p style="text-align:center; font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:rgba(139,0,0,0.2); letter-spacing:2px; margin-bottom:-1rem;">
+      <span class="ee-fragment" data-index="2" data-code="Is" title="Tu cherches quelque chose...">[ 49 73 20 ] — sequence_break detected</span>
+    </p>
+
+    <div class="screenshots-grid">
+      <div class="screenshot-card">
+        <div class="screenshot-glitch-overlay"></div>
+        <div class="screenshot-placeholder">
+          <span>🦍</span>
+          <small>JUNGLE MAP</small>
+        </div>
+      </div>
+      <div class="screenshot-card" style="border-color: rgba(139,0,0,0.4);">
+        <div class="screenshot-glitch-overlay"></div>
+        <div class="screenshot-placeholder">
+          <span>👁</span>
+          <small>THE KING</small>
+        </div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-glitch-overlay"></div>
+        <div class="screenshot-placeholder">
+          <span>💀</span>
+          <small>GAME OVER</small>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:var(--text-dim); margin-top:1.5rem; letter-spacing:2px;">
+      REMPLACE CES PLACEHOLDERS AVEC TES VRAIES CAPTURES 🎮
+    </p>
+  </div>
+</section>
+
+<!-- CORRUPT DIVIDER 2 -->
+<div class="corrupt-divider">
+  <div class="corrupt-divider-inner">
+    ░░░░ DATA_CORRUPTION_DETECTED ░░░░ MEMORY_LEAK_AT_0x00FF ░░░░ FEAR_LEVEL: CRITICAL ░░░░ GORILLA_AI_STATUS: HUNTING ░░░░ PLAYERS_REMAINING: UNKNOWN ░░░░ DATA_CORRUPTION_DETECTED ░░░░ MEMORY_LEAK_AT_0x00FF ░░░░ FEAR_LEVEL: CRITICAL ░░░░ GORILLA_AI_STATUS: HUNTING ░░░░ PLAYERS_REMAINING: UNKNOWN ░░░░
+  </div>
+</div>
+
+<!-- LORE -->
+<section id="lore">
+  <div class="lore-container">
+    <h2 class="section-title">L'Origine</h2>
+    <div class="section-line"></div>
+    <span class="section-tag">// fichier_lore.txt — partiellement corrompu</span>
+
+    <div class="corrupt-terminal">
+      <div class="terminal-line">Chargement des archives... [████████░░] 82%</div>
+      <div class="terminal-line err">ERREUR: fichier 'origin.dat' corrompu par entité inconnue</div>
+      <div class="terminal-line warn">AVERTISSEMENT: La lecture continue à vos risques</div>
+      <div class="terminal-line">---</div>
+      <div class="terminal-line">Il y a longtemps, dans une forêt qui n'existe plus,</div>
+      <div class="terminal-line">un gorille fut exposé au signal corrompu du serveur central.</div>
+      <div class="terminal-line err">████ █████ devint quelque chose d'autre.</div>
+      <div class="terminal-line">Il ne chasse pas par faim. Il chasse par <span style="color:var(--blood-light);">PEUR</span>.</div>
+      <div class="terminal-line warn">// fragment manquant — 2,847 lignes supprimées</div>
+      <div class="terminal-line">Et maintenant, il vous attend.</div>
+      <div class="terminal-line"> <span class="terminal-cursor"></span></div>
+    </div>
+
+    <!-- EASTER EGG FRAGMENT 4/5 -->
+    <p class="lore-text">
+      Le signal a tout changé. <em>Gorilla King of Fear</em> n'est pas un simple jeu —
+      c'est une transmission. Chaque session envoie des données vers un serveur
+      dont personne ne connaît la localisation. Les développeurs ne savent plus
+      qui contrôle le Roi. <br><br>
+      <span class="ee-fragment" style="font-size:0.55rem;" data-index="3" data-code="Coming" title="Presque là...">
+        [ 43 6F 6D 69 6E 67 ] — lore_injection_point
+      </span>
+      <br><br>
+      Tu joues. Il observe. Fais le bon choix.
+    </p>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="download-bg"></div>
+  <div class="download-container">
+    <h2 class="section-title">Obtenir le Jeu</h2>
+    <div class="section-line"></div>
+    <span class="section-tag">// déploiement android — fichier .apk</span>
+
+    <div class="download-box">
+      <div class="version-badge">⬢ VERSION ALPHA — CORROMPUE PAR DESIGN</div>
+      <h3 class="download-title">Gorilla King of Fear</h3>
+      <p class="download-desc">
+        Installe le jeu sur ton Android. Active les sources inconnues dans tes paramètres.
+        Une fois installé, il ne te lâchera plus.
+      </p>
+
+      <div class="download-meta">
+        <span><strong>Android</strong>requis 8.0+</span>
+        <span><strong>~50 MB</strong>fichier .apk</span>
+        <span><strong>VR Ready</strong>mode bête</span>
+        <span><strong>FREE</strong>pour l'instant</span>
+      </div>
+
+      <!-- ZONE DE DÉPÔT APK -->
+      <div class="upload-zone" id="dropZone">
+        <div class="upload-zone-content">
+          <span class="upload-icon">📦</span>
+          <span class="upload-label">Dépose ton fichier .apk ici</span>
+          <span class="upload-sublabel">ou clique pour sélectionner le fichier</span>
+        </div>
+        <input type="file" id="apk-input" accept=".apk">
+      </div>
+
+      <div class="apk-ready" id="apkReady">
+        <span>✅</span>
+        <span class="apk-filename" id="apkFilename">gorilla_king.apk</span>
+        <span style="color:var(--green-corrupt); font-size:0.6rem; letter-spacing:2px;">PRÊT</span>
+      </div>
+
+      <button class="btn-download" id="downloadBtn" disabled>
+        <span>⬇</span> Télécharger GORILLA_KING_OF_FEAR.apk
+      </button>
+
+      <!-- EASTER EGG FRAGMENT 5/5 -->
+      <p class="download-warning">
+        ⚠ SOURCES INCONNUES REQUISES &nbsp;|&nbsp; ANDROID SEULEMENT<br>
+        🔒 AUCUNE DONNÉE COLLECTÉE &nbsp;|&nbsp; JEU EXPÉRIMENTAL
+        <br>
+        <span class="ee-fragment" style="font-size:0.55rem; display:block; margin-top:0.6rem;"
+          data-index="4" data-code="Now" title="Tu as trouvé le dernier fragment !">
+          [ 4E 6F 77 ] — terminal_sequence_complete
+        </span>
+      </p>
+    </div>
+
+    <p style="font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:rgba(139,0,0,0.3); letter-spacing:2px; line-height:2;">
+      POUR AJOUTER TON APK: Dépose simplement ton fichier dans la zone ci-dessus<br>
+      puis partage ta page GitHub Pages avec le fichier .apk dans le même repo.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🦍 GORILLA KING OF FEAR</div>
+  <p class="footer-copy">
+    &copy; 2024 — Gorilla King Of Fear — Fait avec de la peur &amp; du code corrompu
+  </p>
+</footer>
+
+<!-- EASTER EGG TOOLTIP -->
+<div class="ee-tooltip" id="eeTooltip"></div>
+
+<!-- EASTER EGG COUNTER -->
+<div class="ee-counter" id="eeCounter">
+  FRAGMENTS: <span id="eeCount">0</span>/5
+</div>
+
+<!-- FINAL CODE MODAL -->
+<div class="code-modal" id="codeModal">
+  <div class="code-modal-inner">
+    <div style="font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:var(--green-corrupt); letter-spacing:4px; margin-bottom:1.5rem;">
+      ✓ TOUS LES FRAGMENTS COLLECTÉS
+    </div>
+    <div class="code-modal-fragments" id="modalFragments"></div>
+    <div class="code-modal-glitch" id="modalCode">THE END IS COMING</div>
+    <p class="code-modal-sub">// Le Roi vous a trouvé. Il est trop tard.</p>
+    <button class="code-modal-close" id="modalClose">[ Fermer le terminal ]</button>
+  </div>
+</div>
+
+<script>
+/* ─── GLITCH LINES ─── */
+function spawnGlitchLine() {
+  const line = document.createElement('div');
+  line.className = 'glitch-line';
+  const top = Math.random() * 100;
+  const width = 20 + Math.random() * 60;
+  const left = Math.random() * (100 - width);
+  line.style.cssText = `
+    top:${top}vh; left:${left}vw; width:${width}vw;
+    background: ${Math.random() > 0.5 ? '#00FFFF' : '#FF00FF'};
+    opacity: ${0.3 + Math.random() * 0.5};
+  `;
+  document.body.appendChild(line);
+  const dur = 80 + Math.random() * 150;
+  line.style.animation = `none`;
+  setTimeout(() => line.remove(), dur);
+}
+setInterval(() => { if (Math.random() < 0.3) spawnGlitchLine(); }, 800);
+
+/* ─── APK UPLOAD ─── */
+const dropZone = document.getElementById('dropZone');
+const apkInput = document.getElementById('apk-input');
+const apkReady = document.getElementById('apkReady');
+const apkFilename = document.getElementById('apkFilename');
+const downloadBtn = document.getElementById('downloadBtn');
+let apkFile = null;
+
+dropZone.addEventListener('click', () => apkInput.click());
+apkInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.name.endsWith('.apk')) handleFile(f);
+});
+
+function handleFile(f) {
+  if (!f || !f.name.endsWith('.apk')) return;
+  apkFile = f;
+  apkFilename.textContent = f.name;
+  apkReady.classList.add('show');
+  downloadBtn.disabled = false;
+  downloadBtn.textContent = `⬇  Télécharger ${f.name}`;
+}
+
+downloadBtn.addEventListener('click', () => {
+  if (!apkFile) return;
+  const url = URL.createObjectURL(apkFile);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = apkFile.name;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+/* ─── EASTER EGG SYSTEM ─── */
+const eeFragments = document.querySelectorAll('.ee-fragment');
+const eeTooltip = document.getElementById('eeTooltip');
+const eeCounter = document.getElementById('eeCounter');
+const eeCountEl = document.getElementById('eeCount');
+const codeModal = document.getElementById('codeModal');
+const modalCode = document.getElementById('modalCode');
+const modalFragments = document.getElementById('modalFragments');
+const modalClose = document.getElementById('modalClose');
+
+const codes = ['The', 'End', 'Is', 'Coming', 'Now'];
+const found = new Array(5).fill(false);
+
+const messages = [
+  '> FRAGMENT 1/5 TROUVÉ\n> "The" — le début de quelque chose de terrible',
+  '> FRAGMENT 2/5 TROUVÉ\n> "End" — chaque fin est un nouveau cauchemar',
+  '> FRAGMENT 3/5 TROUVÉ\n> "Is" — la vérité se dévoile lentement',
+  '> FRAGMENT 4/5 TROUVÉ\n> "Coming" — tu ne peux plus l\'éviter',
+  '> FRAGMENT 5/5 TROUVÉ\n> "Now" — il est trop tard pour fuir'
+];
+
+let tooltipTimeout;
+function showTooltip(msg) {
+  clearTimeout(tooltipTimeout);
+  eeTooltip.textContent = msg;
+  eeTooltip.classList.add('show');
+  tooltipTimeout = setTimeout(() => eeTooltip.classList.remove('show'), 4000);
+}
+
+eeFragments.forEach(frag => {
+  frag.addEventListener('click', () => {
+    const idx = parseInt(frag.dataset.index);
+    if (found[idx]) return;
+    found[idx] = true;
+    frag.dataset.found = 'true';
+    frag.textContent = `[ ${codes[idx].toUpperCase()} ] ✓`;
+
+    const count = found.filter(Boolean).length;
+    eeCountEl.textContent = count;
+    eeCounter.classList.add('visible');
+    showTooltip(messages[idx]);
+
+    if (count === 5) {
+      setTimeout(triggerFinalCode, 1500);
+    }
+  });
+});
+
+function triggerFinalCode() {
+  const words = ['The', 'End', 'Is', 'Coming'];
+  modalFragments.innerHTML = words.map(w =>
+    `<span class="frag">${w}</span>`
+  ).join('');
+  codeModal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+modalClose.addEventListener('click', () => {
+  codeModal.classList.remove('show');
+  document.body.style.overflow = '';
+});
+
+/* ─── NAV ACTIVE STATE ─── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let curr = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) curr = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === `#${curr}` ? 'var(--blood-light)' : '';
+  });
+});
+
+/* ─── RANDOM GLITCH FLICKER ─── */
+setInterval(() => {
+  const cards = document.querySelectorAll('.feature-card, .screenshot-card');
+  if (!cards.length) return;
+  const card = cards[Math.floor(Math.random() * cards.length)];
+  card.style.transform = `translateX(${(Math.random()-0.5)*4}px) translateY(${(Math.random()-0.5)*2}px)`;
+  setTimeout(() => { card.style.transform = ''; }, 100);
+}, 3000);
+</script>
+</body>
+</html>
